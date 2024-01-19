@@ -1,0 +1,36 @@
+[gd_scene load_steps=8 format=3 uid="uid://bcj6ebk05jq2s"]
+
+[ext_resource type="Shader" uid="uid://cpy6wwlkxsmtk" path="res://assets/shaders/particle_explosion.tres" id="1_ki5yo"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_126vn"]
+fractal_octaves = 3
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_n6668"]
+seamless = true
+noise = SubResource("FastNoiseLite_126vn")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_tgdh8"]
+fractal_octaves = 1
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_55gec"]
+seamless = true
+noise = SubResource("FastNoiseLite_tgdh8")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_3o2aq"]
+render_priority = 0
+shader = ExtResource("1_ki5yo")
+shader_parameter/displacement_pan = Vector2(0, -0.5)
+shader_parameter/displament_strength = 0.14
+shader_parameter/base_colour = Color(0.0980392, 0.0980392, 0.0980392, 1)
+shader_parameter/emission_colour = Color(0.662745, 0.25098, 0, 1)
+shader_parameter/emission_strength = 0.0
+shader_parameter/displacement_texture = SubResource("NoiseTexture2D_55gec")
+shader_parameter/alpha_mask = SubResource("NoiseTexture2D_n6668")
+
+[sub_resource type="SphereMesh" id="SphereMesh_7ta5b"]
+
+[node name="particle" type="Node3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+material_override = SubResource("ShaderMaterial_3o2aq")
+mesh = SubResource("SphereMesh_7ta5b")

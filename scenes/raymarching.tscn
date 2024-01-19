@@ -1,0 +1,209 @@
+[gd_scene load_steps=7 format=3 uid="uid://jj4lddqy3i21"]
+
+[sub_resource type="Shader" id="Shader_qqllh"]
+code = "shader_type spatial;
+render_mode 
+		unshaded,
+		depth_test_disabled;
+
+uniform int MAX_STEPS = 100;
+uniform float MAX_DIST = 100.0;
+uniform float SURF_DIST = 0.01;
+
+uniform float TIMESCALE = 1.0;
+uniform float SHAPE_SIZE = 0.5;
+uniform float SMOOTHNESS = 1.0;
+uniform vec3 POSITION_OFFSET;
+
+uniform float SHAPE_BLEND : hint_range(0.0, 1.0, 0.01);
+
+uniform sampler2D GRADIENT;
+uniform float BRIGHTNESS = 1.0;
+
+uniform sampler2D DEPTH_TEXTURE : hint_depth_texture, filter_linear_mipmap;
+
+// ** Boolean Operators **  https://iquilezles.org/articles/distfunctions/
+float union(float a, float b) {
+	return min(a, b);
+}
+
+float smoothUnion(float d1, float d2, float k){
+	float h = clamp(0.5 + 0.5*(d2-d1)/k, 0.0, 1.0);
+	return mix(d2, d1, h) - k*h*(1.0-h);
+}
+
+float subtraction(float a, float b) {
+	return max(-a, b);
+}
+
+float smoothSubtraction( float d1, float d2, float k )
+{
+    float h = clamp( 0.5 - 0.5*(d2+d1)/k, 0.0, 1.0 );
+    return mix( d2, -d1, h ) + k*h*(1.0-h);
+}
+
+float intersection(float a, float b) {
+	return max(a, b);
+}
+
+float smoothIntersection( float d1, float d2, float k )
+{
+    float h = clamp( 0.5 - 0.5*(d2-d1)/k, 0.0, 1.0 );
+    return mix( d2, d1, h ) + k*h*(1.0-h);
+}
+
+// ** Shape Functions **
+float sdSphere(vec3 pos, vec3 sphere_pos, float radius) {
+	return length(sphere_pos - pos) - radius;
+}
+
+float sdTorus( vec3 p, vec2 t )
+{
+  vec2 q = vec2(length(p.xz)-t.x,p.y);
+  return length(q)-t.y;
+}
+
+float sdRoundBox( vec3 p, vec3 b, float r )
+{
+  vec3 q = abs(p) - b;
+  return length(max(q,0.0)) + min(max(q.x,max(q.y,q.z)),0.0) - r;
+}
+
+float _getdist(vec3 pos) {
+	float t = TIME * TIMESCALE;
+	
+	pos -= POSITION_OFFSET;
+	
+	vec3 shape1_pos = (vec3(sin(t * 0.337), abs(sin(t * 0.428)), sin(t * -0.989)));
+	vec3 shape2_pos = (vec3(sin(t * -0.214), abs(sin(t * -0.725)), sin(t * 0.56)));
+	vec3 shape3_pos = (vec3(sin(t * -0.671), abs(sin(t * 0.272)), sin(t * 0.773)));
+	
+	vec3 movescale = vec3(0.2, 4.0, 0.2);
+	
+	float sp1 = sdSphere(pos, shape1_pos * movescale, SHAPE_SIZE * 0.5);
+	float sp2 = sdSphere(pos, shape2_pos * movescale, SHAPE_SIZE * 0.75);
+	float sp3 = sdSphere(pos, shape3_pos * movescale, SHAPE_SIZE);
+	float sp4 = sdSphere(pos, vec3(0.0), 0.8);
+	float spheres = smoothUnion(sp1, sp2, SMOOTHNESS);
+	spheres = smoothUnion(spheres, sp3, SMOOTHNESS);
+	spheres = smoothUnion(spheres, sp4, SMOOTHNESS);
+	
+	float to1 = sdTorus(pos - (shape1_pos * movescale), vec2(SHAPE_SIZE * 0.5));
+	float to2 = sdTorus(pos - (shape2_pos * movescale), vec2(SHAPE_SIZE * 0.75));
+	float to3 = sdTorus(pos - (shape3_pos * movescale), vec2(SHAPE_SIZE));
+	float to4 = sdTorus(pos, vec2(SHAPE_SIZE * 0.8));
+	float toruses = smoothUnion(to1, to2, SMOOTHNESS);
+	toruses = smoothUnion(toruses, to3, SMOOTHNESS);
+	toruses = smoothUnion(toruses, to4, SMOOTHNESS);
+	
+	float bx1 = sdRoundBox(pos - (shape1_pos * movescale), vec3(SHAPE_SIZE * 0.5), 0.1);
+	float bx2 = sdRoundBox(pos - (shape2_pos * movescale), vec3(SHAPE_SIZE * 0.75), 0.1);
+	float bx3 = sdRoundBox(pos - (shape3_pos * movescale), vec3(SHAPE_SIZE), 0.1);
+	float bx4 = sdRoundBox(pos, vec3(SHAPE_SIZE * 0.8), 0.5);
+	float boxes = smoothUnion(bx1, bx2, SMOOTHNESS);
+	boxes = smoothUnion(boxes, bx3, SMOOTHNESS);
+	boxes = smoothUnion(boxes, bx4, SMOOTHNESS);
+	
+	float lava = mix(spheres, boxes, SHAPE_BLEND);
+	
+	return lava;
+}
+
+vec3 _getnormal(vec3 pos) {
+	float dist = _getdist(pos);
+	vec2 e = vec2(0.01, 0.0);
+	vec3 normal = dist - vec3(
+		_getdist(pos - e.xyy),
+		_getdist(pos - e.yxy),
+		_getdist(pos - e.yyx));
+		return normalize(normal);
+}
+
+float _raymarch(vec3 ray_origin, vec3 ray_dir) {
+	float dist = 0.0; // dist = current distance
+	for (int i = 0; i < MAX_STEPS; i++) {
+		vec3 pos = ray_origin + ray_dir * dist; // Step along ray
+		float dS = _getdist(pos);
+		dist += dS;
+		if (dist>MAX_DIST || dS<SURF_DIST) break;
+	}
+	return dist;
+}
+
+void fragment() {
+	// Scene depth
+	float depth = texture(DEPTH_TEXTURE, SCREEN_UV).x;
+	vec3 ndc = vec3(SCREEN_UV * 2.0 - 1.0, depth);
+	vec4 view = INV_PROJECTION_MATRIX * vec4(ndc, 1.0);
+	view.xyz /= view.w;
+	float linear_depth = -view.z;
+	
+	vec3 world_space_pixel_pos = ((INV_VIEW_MATRIX * vec4(VERTEX, 1.0)).xyz);
+	vec3 ray_origin = CAMERA_POSITION_WORLD;
+	vec3 ray_dir = normalize(world_space_pixel_pos - ray_origin);
+	
+	float dist = _raymarch(ray_origin, ray_dir);
+	ALPHA = step(dist, min(MAX_DIST, linear_depth));
+	/* ^^ Same as:
+	if (d > MAX_DIST) {
+		ALPHA = 0.0;
+		} else {
+		ALPHA = 1.0;
+	}*/
+	
+	vec3 normal = _getnormal(ray_origin + ray_dir * dist);
+	
+	float height = (ray_origin + ray_dir * dist).y;
+	height = 1.0 - (height - 2.0) * 0.25;
+	
+	float f = dot(ray_dir, normal) * -0.5;
+	float gradient = f * height;
+	gradient = clamp(gradient, 0.0, 1.0);
+	
+	vec2 gradient_uv = vec2(clamp(gradient * gradient, 0.01, 1.0));
+	
+	ALBEDO = texture(GRADIENT, gradient_uv).rgb * BRIGHTNESS;
+	//ALBEDO = vec3(gradient);
+}
+
+
+
+"
+
+[sub_resource type="Gradient" id="Gradient_rlkqu"]
+offsets = PackedFloat32Array(0, 0.987952)
+colors = PackedColorArray(0.847656, 0.441315, 0.0827789, 1, 1, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_gsj1n"]
+gradient = SubResource("Gradient_rlkqu")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_uqxt7"]
+render_priority = 0
+shader = SubResource("Shader_qqllh")
+shader_parameter/MAX_STEPS = 100
+shader_parameter/MAX_DIST = 100.0
+shader_parameter/SURF_DIST = 0.01
+shader_parameter/TIMESCALE = 1.0
+shader_parameter/SHAPE_SIZE = 0.5
+shader_parameter/SMOOTHNESS = 1.0
+shader_parameter/POSITION_OFFSET = Vector3(0, 0, 0)
+shader_parameter/SHAPE_BLEND = 0.0
+shader_parameter/BRIGHTNESS = 1.0
+shader_parameter/GRADIENT = SubResource("GradientTexture1D_gsj1n")
+
+[sub_resource type="BoxMesh" id="BoxMesh_2s4xf"]
+material = SubResource("ShaderMaterial_uqxt7")
+flip_faces = true
+size = Vector3(5, 5, 5)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_xnd8r"]
+
+[node name="raymarching" type="Node3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.50817, 0, 0, 0, 1.70657, 0, 0, 0, 1.30282, 0, 1.21082, 0)
+mesh = SubResource("BoxMesh_2s4xf")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1.50817, 0, 0, 0, 1.70657, 0, 0, 0, 1.30282, -0.831749, 1.98435, -5.12217)
+mesh = SubResource("CylinderMesh_xnd8r")

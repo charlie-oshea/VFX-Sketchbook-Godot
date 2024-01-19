@@ -1,0 +1,280 @@
+[gd_scene load_steps=38 format=3 uid="uid://cc0fn3b05cw1y"]
+
+[ext_resource type="Script" path="res://assets/camera.gd" id="1_4udk3"]
+[ext_resource type="PackedScene" uid="uid://o2bedvhp6j22" path="res://assets/models/waterfall_scene/waterfall_model.glb" id="1_a3pr3"]
+[ext_resource type="Material" uid="uid://bebpabbw5brjl" path="res://assets/shaders/waterfall_scene/water_motion.tres" id="1_mm3s6"]
+[ext_resource type="Texture2D" uid="uid://brlpx2iwlrecx" path="res://assets/textures/waterfall_scene/wind_waker_2048.png" id="2_ek67v"]
+[ext_resource type="Shader" path="res://assets/shaders/waterfall_scene/rock.gdshader" id="3_qli78"]
+[ext_resource type="Shader" path="res://assets/shaders/waterfall_scene/waterfall_splash.gdshader" id="4_cklrh"]
+[ext_resource type="Shader" path="res://assets/shaders/stylised_sky.gdshader" id="7_2delc"]
+[ext_resource type="ArrayMesh" uid="uid://dynwnutl6qp1w" path="res://assets/models/waterfall_scene/grass_model.res" id="8_wbusy"]
+[ext_resource type="ArrayMesh" uid="uid://dcsuuyb0r6u3m" path="res://assets/models/waterfall_scene/landscape_ground.res" id="9_2snar"]
+[ext_resource type="ArrayMesh" uid="uid://csbxgc8jgs1mh" path="res://assets/models/waterfall_scene/landscape_water.res" id="10_wdxpf"]
+[ext_resource type="Shader" path="res://assets/shaders/waterfall_scene/water_01.gdshader" id="11_o4453"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_lkbbi"]
+render_priority = 0
+shader = ExtResource("3_qli78")
+shader_parameter/top_colour = Color(0.435294, 0.635294, 0.137255, 1)
+shader_parameter/side_colour = Color(0.270588, 0.266667, 0.266667, 1)
+shader_parameter/offset = 0.76
+shader_parameter/fade = 0.02
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_4pery"]
+render_priority = 0
+shader = ExtResource("3_qli78")
+shader_parameter/top_colour = Color(0.435294, 0.635294, 0.137255, 1)
+shader_parameter/side_colour = Color(0.337255, 0.254902, 0.0352941, 1)
+shader_parameter/offset = 0.553
+shader_parameter/fade = 0.042
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_si8xs"]
+render_priority = 0
+shader = ExtResource("4_cklrh")
+shader_parameter/displacement_amount = 0.16
+shader_parameter/distortion_scale = 0.55
+shader_parameter/distortion_offset = Vector3(0, 0.325, 0)
+shader_parameter/distortion_speed = 1.8
+shader_parameter/water_tex = ExtResource("2_ek67v")
+
+[sub_resource type="Curve" id="Curve_enm3g"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -2.82947, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_c00ge"]
+curve = SubResource("Curve_enm3g")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_d53v3"]
+emission_shape = 3
+emission_box_extents = Vector3(0, 0, 3.165)
+direction = Vector3(0, 1, 0)
+gravity = Vector3(0, -5, 0)
+initial_velocity_min = 4.0
+initial_velocity_max = 4.0
+scale_min = 0.4
+scale_curve = SubResource("CurveTexture_c00ge")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pdrdn"]
+shading_mode = 0
+albedo_color = Color(0.85098, 0.862745, 1, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_urndj"]
+material = SubResource("StandardMaterial3D_pdrdn")
+radial_segments = 6
+rings = 3
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_12spd"]
+material = ExtResource("1_mm3s6")
+size = Vector2(5, 5)
+
+[sub_resource type="BoxMesh" id="BoxMesh_k742x"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_omuwv"]
+
+[sub_resource type="TorusMesh" id="TorusMesh_ejsu6"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_6qsxp"]
+frequency = 0.005
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_mvhfo"]
+seamless = true
+noise = SubResource("FastNoiseLite_6qsxp")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_vy6fv"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_fqkv2"]
+seamless = true
+noise = SubResource("FastNoiseLite_vy6fv")
+
+[sub_resource type="Gradient" id="Gradient_06o1k"]
+offsets = PackedFloat32Array(0.464968, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ynxq6"]
+noise_type = 3
+fractal_octaves = 1
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_4e6l2"]
+width = 1024
+height = 1024
+seamless = true
+seamless_blend_skirt = 1.0
+color_ramp = SubResource("Gradient_06o1k")
+noise = SubResource("FastNoiseLite_ynxq6")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_4gykn"]
+noise_type = 3
+frequency = 0.0224
+fractal_octaves = 1
+domain_warp_amplitude = 28.13
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_f7mh7"]
+seamless = true
+noise = SubResource("FastNoiseLite_4gykn")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_52rlm"]
+shader = ExtResource("7_2delc")
+shader_parameter/day_top_colour = Color(0.054902, 0.690196, 1, 1)
+shader_parameter/day_bottom_colour = Color(0.180392, 0.490196, 0.968627, 1)
+shader_parameter/sunset_top_colour = Color(0.0784314, 0.705882, 0.952941, 1)
+shader_parameter/sunset_bottom_colour = Color(0.0666667, 0.776471, 0.964706, 1)
+shader_parameter/night_top_colour = Color(0.0666667, 0.027451, 0.254902, 1)
+shader_parameter/night_bottom_colour = Color(0.0431373, 0.0156863, 0.278431, 1)
+shader_parameter/night_darkness = 0.0
+shader_parameter/SUNSET_SIZE = 2.454
+shader_parameter/SUNSET_OPACITY = 0.149
+shader_parameter/SUN_COLOUR = Color(1, 1, 1, 1)
+shader_parameter/SUN_SIZE = 0.327
+shader_parameter/SUN_BLUR = 0.01
+shader_parameter/MOON_SIZE = 0.331
+shader_parameter/MOON_COLOUR = Color(0.772549, 0.772549, 0.772549, 1)
+shader_parameter/MOON_BLUR = 0.01
+shader_parameter/CRESCENT_SIZE = 0.33
+shader_parameter/CRESCENT_BLUR = 0.01
+shader_parameter/CRESCENT_OFFSET = Vector3(0.015, 0, 0)
+shader_parameter/HORIZON_HEIGHT = 1.057
+shader_parameter/HORIZON_OPACITY = 1.0
+shader_parameter/HORIZON_COLOUR = Color(0.54902, 0.713726, 0.878431, 1)
+shader_parameter/HORIZON_SUNSET_COLOUR = Color(0.976471, 0.843137, 0.588235, 1)
+shader_parameter/STARS_SPEED = 1.0
+shader_parameter/STARS_TEXTURE = SubResource("NoiseTexture2D_f7mh7")
+shader_parameter/CLOUD_TYPE = 1.0
+shader_parameter/CLOUD_OPACITY = 0.39
+shader_parameter/CLOUD_SPEED = 0.01
+shader_parameter/CLOUD_SIZE = 0.19
+shader_parameter/CLOUD1_CLIP = 1.34
+shader_parameter/CLOUD2_CLIP = 1.16
+shader_parameter/CLOUD_COLOUR = Color(0.662745, 0.670588, 0.803922, 1)
+shader_parameter/CLOUD_COLOUR_2 = Color(0.584314, 0.592157, 0.74902, 1)
+shader_parameter/CLOUD_CUTTOFF_EDGE = 0.91
+shader_parameter/CLOUD_CUTOFF_MAX = 0.5
+shader_parameter/CLOUD_CUTOFF_MIN = 0.32
+shader_parameter/CLOUD_TEX_1 = SubResource("NoiseTexture2D_mvhfo")
+shader_parameter/CLOUD_TEX_2 = SubResource("NoiseTexture2D_fqkv2")
+shader_parameter/CLOUD_TEX_LARGE = SubResource("NoiseTexture2D_4e6l2")
+
+[sub_resource type="Sky" id="Sky_1dxky"]
+sky_material = SubResource("ShaderMaterial_52rlm")
+
+[sub_resource type="Environment" id="Environment_il0rf"]
+background_mode = 2
+sky = SubResource("Sky_1dxky")
+
+[sub_resource type="MultiMesh" id="MultiMesh_gll8a"]
+transform_format = 1
+instance_count = 1
+mesh = ExtResource("8_wbusy")
+buffer = PackedFloat32Array(-0.795673, -0.60737, -0.00260408, -55.8923, -0.00208824, -0.00155609, 1.001, 9.9002, -0.607372, 0.795676, -3.0163e-05, 61.9983)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hl8vn"]
+render_priority = 1
+shader = ExtResource("11_o4453")
+shader_parameter/alpha = 1.0
+shader_parameter/top_detail_colour = Color(1, 1, 1, 1)
+shader_parameter/bottom_detail_colour = Color(0.027451, 0.415686, 0.913725, 1)
+shader_parameter/base_colour = Color(0.109804, 0.658824, 0.929412, 1)
+shader_parameter/water_scale = 22.77
+shader_parameter/water_offset = Vector3(0.01, 0, 0)
+shader_parameter/water_speed = 2.31
+shader_parameter/second_layer_offset = Vector3(0.115, 0.16, 0)
+shader_parameter/second_layer_speed = 4.69
+shader_parameter/edge_distance = 4.01
+shader_parameter/edge_toggle = 1.0
+shader_parameter/wave_size = 20.0
+shader_parameter/wave_speed = 0.1
+shader_parameter/displacement_amount = 0.01
+shader_parameter/distortion_amount = 0.01
+shader_parameter/distortion_scale = 1.3
+shader_parameter/distortion_offset = Vector3(0.1, 0, 0)
+shader_parameter/distortion_speed = 0.78
+shader_parameter/offset = 4.75e-08
+shader_parameter/fade = 0.1
+shader_parameter/water_tex = ExtResource("2_ek67v")
+
+[node name="waterfall_scene" type="Node3D"]
+
+[node name="FreeLookCamera" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 56.2911, 10.4301, 269.069)
+fov = 70.0
+script = ExtResource("1_4udk3")
+
+[node name="waterfall_model" parent="." instance=ExtResource("1_a3pr3")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
+
+[node name="ground" parent="waterfall_model" index="0"]
+surface_material_override/0 = SubResource("ShaderMaterial_lkbbi")
+
+[node name="river" parent="waterfall_model" index="1"]
+surface_material_override/0 = ExtResource("1_mm3s6")
+
+[node name="rocks" parent="waterfall_model" index="2"]
+surface_material_override/0 = SubResource("ShaderMaterial_4pery")
+
+[node name="bottom_splash_01" parent="waterfall_model" index="3"]
+transform = Transform3D(1, 0, 0, 0, 0.614981, -2.45022, 0, 0.788542, 1.91092, -0.447309, 0.921737, -1.8113)
+surface_material_override/0 = SubResource("ShaderMaterial_si8xs")
+
+[node name="particles" type="Node3D" parent="."]
+
+[node name="splash" type="GPUParticles3D" parent="particles"]
+transform = Transform3D(0.813821, 0.581115, 0, -0.581115, 0.813821, 0, 0, 0, 1, -2.52076, 0.585664, 0.553469)
+amount = 100
+visibility_aabb = AABB(-4, -4, -4.14894, 8, 8, 8.29788)
+process_material = SubResource("ParticleProcessMaterial_d53v3")
+draw_pass_1 = SubResource("SphereMesh_urndj")
+
+[node name="splash2" type="GPUParticles3D" parent="particles"]
+transform = Transform3D(0.956646, 0.291253, 0, -0.291253, 0.956646, 0, 0, 0, 1, -0.252945, -2.05581, -0.0885155)
+amount = 100
+visibility_aabb = AABB(-4, -4, -4.12479, 8, 8, 8.24958)
+process_material = SubResource("ParticleProcessMaterial_d53v3")
+draw_pass_1 = SubResource("SphereMesh_urndj")
+
+[node name="test" type="Node3D" parent="."]
+visible = false
+
+[node name="water_test" type="MeshInstance3D" parent="test"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00750303, 0.00738537, -4.57764e-05)
+mesh = SubResource("PlaneMesh_12spd")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="test"]
+transform = Transform3D(0.64419, 0, -0.764865, -0.379516, 0.868216, -0.319638, 0.664068, 0.496186, 0.559297, -0.0422792, -0.129526, 0.702635)
+mesh = SubResource("BoxMesh_k742x")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="test"]
+transform = Transform3D(0.990342, 0.120205, -0.0690984, -0.055263, -0.11485, -0.991845, -0.127161, 0.986083, -0.107098, 1.48647, -0.47816, 0.329218)
+mesh = SubResource("BoxMesh_k742x")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="test"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.828099, 0, -1.37107)
+mesh = SubResource("SphereMesh_omuwv")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="test"]
+transform = Transform3D(0.501751, 0, 0, 0, 0.466012, -0.185976, 0, 0.185976, 0.466012, 1.10068, 0, -1.37107)
+mesh = SubResource("TorusMesh_ejsu6")
+skeleton = NodePath("../..")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_il0rf")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.988733, -0.0306062, 0.146528, -0.0672238, 0.783827, 0.61733, -0.133747, -0.620224, 0.772938, -0.27001, 0, 0)
+
+[node name="MultiMeshInstance3D" type="MultiMeshInstance3D" parent="."]
+multimesh = SubResource("MultiMesh_gll8a")
+
+[node name="mountain_lake" type="Node3D" parent="."]
+transform = Transform3D(139.402, 0, 0, 0, 139.402, 0, 0, 0, 139.402, 0, 0, 264.304)
+
+[node name="ground" type="MeshInstance3D" parent="mountain_lake"]
+mesh = ExtResource("9_2snar")
+surface_material_override/0 = SubResource("ShaderMaterial_lkbbi")
+
+[node name="water" type="MeshInstance3D" parent="mountain_lake"]
+mesh = ExtResource("10_wdxpf")
+surface_material_override/0 = SubResource("ShaderMaterial_hl8vn")
+
+[editable path="waterfall_model"]

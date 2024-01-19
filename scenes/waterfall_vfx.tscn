@@ -1,0 +1,75 @@
+[gd_scene load_steps=12 format=3 uid="uid://cabpdprjg5f6u"]
+
+[ext_resource type="PackedScene" uid="uid://d0f0sn1c15crj" path="res://assets/models/waterfallmodel.glb" id="1_8n15l"]
+[ext_resource type="Shader" uid="uid://tgochw08dite" path="res://assets/shaders/waterfall_vfx.tres" id="1_l6eia"]
+[ext_resource type="Shader" uid="uid://d3pkhh4gmctkq" path="res://assets/shaders/water_splash_vfx.tres" id="3_uywnl"]
+
+[sub_resource type="Gradient" id="Gradient_e4hgq"]
+interpolation_mode = 2
+offsets = PackedFloat32Array(0.585366, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_afyaf"]
+gradient = SubResource("Gradient_e4hgq")
+fill_to = Vector2(0, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8o3jr"]
+render_priority = 0
+shader = ExtResource("1_l6eia")
+shader_parameter/ripple_speed2 = Vector2(0, 0.175)
+shader_parameter/voronoi_scale2 = Vector2(1, 0.4)
+shader_parameter/ripple_colour2 = Color(1, 1, 1, 1)
+shader_parameter/vertex_offset_amount = -0.11
+shader_parameter/ripple_speed = Vector2(0, -1.2)
+shader_parameter/voronoi_scale = Vector2(1.005, 0.445)
+shader_parameter/ripple_colour = Color(0, 0.831373, 0.976471, 1)
+shader_parameter/gradient = SubResource("GradientTexture2D_afyaf")
+
+[sub_resource type="Curve" id="Curve_a7gfh"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.421053), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_rvcj0"]
+curve = SubResource("Curve_a7gfh")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_jkp7o"]
+emission_shape = 3
+emission_box_extents = Vector3(1.51, 0.2, 0.2)
+direction = Vector3(0, 2.38, 0)
+gravity = Vector3(0, -2, 0)
+initial_velocity_min = 0.1
+initial_velocity_max = 2.0
+angle_min = -720.0
+angle_max = 1691.5
+scale_min = 0.1
+scale_max = 1.2
+scale_curve = SubResource("CurveTexture_rvcj0")
+hue_variation_min = -1.0
+hue_variation_max = 0.94
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ocjie"]
+render_priority = 0
+shader = ExtResource("3_uywnl")
+shader_parameter/colour = Color(0.596078, 0.937255, 1, 1)
+shader_parameter/fresnel_colour = Color(1, 1, 1, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_ifyde"]
+material = SubResource("ShaderMaterial_ocjie")
+radial_segments = 6
+rings = 4
+
+[node name="waterfall_vfx" type="Node3D"]
+
+[node name="waterfall_mesh" parent="." instance=ExtResource("1_8n15l")]
+
+[node name="Plane_001" parent="waterfall_mesh" index="0"]
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0.00198555, -1.88729, -0.163268)
+material_override = SubResource("ShaderMaterial_8o3jr")
+
+[node name="splash_particles" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.97485, 0)
+amount = 40
+local_coords = true
+process_material = SubResource("ParticleProcessMaterial_jkp7o")
+draw_pass_1 = SubResource("SphereMesh_ifyde")
+
+[editable path="waterfall_mesh"]

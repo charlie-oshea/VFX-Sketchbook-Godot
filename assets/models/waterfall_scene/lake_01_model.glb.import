@@ -1,0 +1,55 @@
+[remap]
+
+importer="scene"
+importer_version=1
+type="PackedScene"
+uid="uid://b0f13h6b1h4ss"
+path="res://.godot/imported/lake_01_model.glb-8271028d4a7a1e157023b9c7f6b47536.scn"
+
+[deps]
+
+source_file="res://assets/models/waterfall_scene/lake_01_model.glb"
+dest_files=["res://.godot/imported/lake_01_model.glb-8271028d4a7a1e157023b9c7f6b47536.scn"]
+
+[params]
+
+nodes/root_type="Node3D"
+nodes/root_name="Scene Root"
+nodes/apply_root_scale=true
+nodes/root_scale=1.0
+meshes/ensure_tangents=true
+meshes/generate_lods=true
+meshes/create_shadow_meshes=true
+meshes/light_baking=1
+meshes/lightmap_texel_size=0.2
+skins/use_named_skins=true
+animation/import=true
+animation/fps=30
+animation/trimming=false
+animation/remove_immutable_tracks=true
+import_script/path=""
+_subresources={
+"meshes": {
+"lake_01_model_Landscape": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"lods/normal_split_angle": 25.0,
+"save_to_file/enabled": true,
+"save_to_file/make_streamable": "",
+"save_to_file/path": "res://assets/models/waterfall_scene/landscape_ground.res"
+},
+"lake_01_model_Landscape_plane": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"lods/normal_split_angle": 25.0,
+"save_to_file/enabled": true,
+"save_to_file/make_streamable": "",
+"save_to_file/path": "res://assets/models/waterfall_scene/landscape_water.res"
+}
+}
+}
+gltf/embedded_image_handling=1

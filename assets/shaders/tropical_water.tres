@@ -1,0 +1,33 @@
+[gd_resource type="VisualShader" load_steps=2 format=3 uid="uid://dyk3qecgp7r8e"]
+
+[sub_resource type="VisualShaderNodeLinearSceneDepth" id="VisualShaderNodeLinearSceneDepth_xts5p"]
+
+[resource]
+code = "shader_type spatial;
+render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_schlick_ggx, depth_prepass_alpha;
+
+uniform sampler2D depth_tex_frg_2 : hint_depth_texture;
+
+
+
+void fragment() {
+	float n_out2p0;
+// LinearSceneDepth:2
+	{
+		float __log_depth = textureLod(depth_tex_frg_2, SCREEN_UV, 0.0).x;
+	vec4 __depth_view = INV_PROJECTION_MATRIX * vec4(SCREEN_UV * 2.0 - 1.0, __log_depth, 1.0);
+		__depth_view.xyz /= __depth_view.w;
+		n_out2p0 = -__depth_view.z;
+	}
+
+
+// Output:0
+	ALBEDO = vec3(n_out2p0);
+
+
+}
+"
+flags/depth_prepass_alpha = true
+nodes/fragment/2/node = SubResource("VisualShaderNodeLinearSceneDepth_xts5p")
+nodes/fragment/2/position = Vector2(-320, 200)
+nodes/fragment/connections = PackedInt32Array(2, 0, 0, 0)

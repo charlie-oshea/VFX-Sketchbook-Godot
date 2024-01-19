@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://dkcvntk2ggh0l"]
+
+[ext_resource type="Shader" path="res://assets/shaders/pixelation_shader.gdshader" id="1_j6ccv"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_nq05y"]
+shader = ExtResource("1_j6ccv")
+shader_parameter/pixel_size = 5.0
+
+[node name="pixelize" type="ColorRect"]
+material = SubResource("ShaderMaterial_nq05y")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 1, 1, 0)

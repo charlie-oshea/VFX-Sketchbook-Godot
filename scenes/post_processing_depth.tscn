@@ -1,0 +1,100 @@
+[gd_scene load_steps=11 format=3 uid="uid://bgy46pk77tqw0"]
+
+[ext_resource type="Script" path="res://assets/camera.gd" id="1_hdpss"]
+[ext_resource type="Shader" path="res://assets/shaders/sci_fi_pulse.gdshader" id="2_nfek4"]
+[ext_resource type="Script" path="res://scripts/pulse_effect.gd" id="3_nfwoo"]
+[ext_resource type="Texture2D" uid="uid://dxsi4d84sfr5u" path="res://assets/textures/pulse/honeycomb_tex.jpg" id="3_oq7t3"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qyq1n"]
+render_priority = 0
+shader = ExtResource("2_nfek4")
+shader_parameter/start_point = Vector3(0, 0, 0)
+shader_parameter/pulse_width = 2.0
+shader_parameter/radius = null
+shader_parameter/color = Color(0.282353, 1, 0.258824, 1)
+shader_parameter/pulse_tex = ExtResource("3_oq7t3")
+
+[sub_resource type="QuadMesh" id="QuadMesh_85g15"]
+flip_faces = true
+size = Vector2(2, 2)
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_c83as"]
+sky_top_color = Color(0.380392, 0.647059, 0.992157, 1)
+sky_horizon_color = Color(0.595098, 0.661765, 0.748039, 1)
+sky_energy_multiplier = 0.6
+ground_bottom_color = Color(0, 0, 0, 1)
+ground_horizon_color = Color(0.595098, 0.661765, 0.748039, 1)
+
+[sub_resource type="Sky" id="Sky_fk6fr"]
+sky_material = SubResource("ProceduralSkyMaterial_c83as")
+
+[sub_resource type="Environment" id="Environment_wbwtf"]
+background_mode = 2
+sky = SubResource("Sky_fk6fr")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="SphereMesh" id="SphereMesh_l4xmb"]
+radius = 0.2
+height = 0.4
+
+[node name="post_processing" type="Node3D"]
+
+[node name="FreeLookCamera" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2745, 5.4968)
+script = ExtResource("1_hdpss")
+
+[node name="plane" type="MeshInstance3D" parent="FreeLookCamera"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.124519)
+material_override = SubResource("ShaderMaterial_qyq1n")
+mesh = SubResource("QuadMesh_85g15")
+script = ExtResource("3_nfwoo")
+
+[node name="stage" type="Node3D" parent="."]
+
+[node name="CSGBox3D" type="CSGBox3D" parent="stage"]
+size = Vector3(13.9089, 0.10729, 14.2815)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="stage"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.39673, 0, -1.55019)
+size = Vector3(1.91545, 3.25901, 2.48263)
+
+[node name="CSGTorus3D" type="CSGTorus3D" parent="stage"]
+transform = Transform3D(0.453695, 0.891157, 0, -0.891157, 0.453695, 0, 0, 0, 1, 0, 0.992524, 0)
+sides = 16
+ring_sides = 12
+
+[node name="CSGTorus3D2" type="CSGTorus3D" parent="stage"]
+transform = Transform3D(-0.140478, -0.27593, 0.950857, -0.891157, 0.453695, 0, -0.431399, -0.847363, -0.309631, 1.97161, 0.992523, 2.06985)
+sides = 16
+ring_sides = 12
+
+[node name="CSGTorus3D3" type="CSGTorus3D" parent="stage"]
+transform = Transform3D(-0.873433, 0.478214, -0.0917964, -0.467592, -0.876299, -0.116008, -0.135918, -0.0584017, 0.988997, 0.780853, 0.520781, -2.02847)
+sides = 16
+ring_sides = 12
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="stage"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0, -1.42501)
+radius = 0.813433
+height = 3.23141
+sides = 16
+
+[node name="CSGCylinder3D2" type="CSGCylinder3D" parent="stage"]
+transform = Transform3D(0.263654, -0.964617, 0, 0.964617, 0.263654, 0, 0, 0, 1, -2.84543, 0, -1.42501)
+radius = 0.813433
+height = 3.23141
+sides = 16
+
+[node name="lighting" type="Node3D" parent="."]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="lighting"]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="lighting"]
+environment = SubResource("Environment_wbwtf")
+
+[node name="pulse_origin" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.0625, 0, 4.81807)
+mesh = SubResource("SphereMesh_l4xmb")

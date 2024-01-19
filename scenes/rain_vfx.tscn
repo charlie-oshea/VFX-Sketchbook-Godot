@@ -1,0 +1,111 @@
+[gd_scene load_steps=16 format=3 uid="uid://cdbwka60hv3ub"]
+
+[ext_resource type="Texture2D" uid="uid://brd10o2etmoy7" path="res://assets/textures/rain/industrial_sunset_puresky_2k.exr" id="1_gabxv"]
+[ext_resource type="Texture2D" uid="uid://b0ym7mcw25gif" path="res://assets/textures/rain/asphalt_02_nor_gl_2k.png" id="3_6pu7p"]
+[ext_resource type="Script" path="res://assets/camera.gd" id="5_1qb0g"]
+[ext_resource type="Texture2D" uid="uid://dfr88qumbmj3p" path="res://assets/textures/rain/rain_tex.png" id="6_8chho"]
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_mo2l4"]
+panorama = ExtResource("1_gabxv")
+
+[sub_resource type="Sky" id="Sky_02mq8"]
+sky_material = SubResource("PanoramaSkyMaterial_mo2l4")
+
+[sub_resource type="Environment" id="Environment_kw8n4"]
+background_mode = 2
+sky = SubResource("Sky_02mq8")
+ambient_light_source = 3
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.08
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qkhyw"]
+albedo_color = Color(0, 0, 0, 1)
+normal_texture = ExtResource("3_6pu7p")
+uv1_scale = Vector3(10, 10, 10)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_dbxmw"]
+material = SubResource("StandardMaterial3D_qkhyw")
+size = Vector2(100, 100)
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_m6uc8"]
+emission_shape = 3
+emission_box_extents = Vector3(50, 0.5, 50)
+direction = Vector3(0, -1, 0)
+spread = 5.0
+initial_velocity_min = 30.0
+initial_velocity_max = 30.0
+color = Color(0.760784, 0.760784, 0.760784, 0.305882)
+sub_emitter_mode = 3
+sub_emitter_amount_at_collision = 4
+collision_mode = 2
+
+[sub_resource type="Curve" id="Curve_1vsq4"]
+max_value = 0.1
+_data = [Vector2(0.0156658, 0.00105263), 0.0, 0.0, 0, 0, Vector2(0.0313316, 0.0452632), 0.247097, 0.247097, 0, 0, Vector2(0.992167, 0.00105263), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rd4sm"]
+transparency = 1
+cull_mode = 2
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("6_8chho")
+use_particle_trails = true
+
+[sub_resource type="RibbonTrailMesh" id="RibbonTrailMesh_lv3yx"]
+material = SubResource("StandardMaterial3D_rd4sm")
+curve = SubResource("Curve_1vsq4")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_7xx7m"]
+direction = Vector3(0, 1, 0)
+spread = 58.76
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 2.0
+initial_velocity_max = 3.0
+color = Color(0.780392, 0.780392, 0.780392, 0.490196)
+
+[sub_resource type="RibbonTrailMesh" id="RibbonTrailMesh_4kfec"]
+material = SubResource("StandardMaterial3D_rd4sm")
+curve = SubResource("Curve_1vsq4")
+
+[node name="rain_vfx" type="Node3D"]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_kw8n4")
+
+[node name="ground" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_dbxmw")
+
+[node name="GPUParticlesCollisionBox3D" type="GPUParticlesCollisionBox3D" parent="ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.452278, 0)
+size = Vector3(120.355, 1, 117.924)
+
+[node name="FreeLookCamera" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.01175, 2.02942)
+script = ExtResource("5_1qb0g")
+
+[node name="rain_realistic" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 23.2311, 0)
+amount = 2000
+sub_emitter = NodePath("../splash")
+randomness = 0.5
+visibility_aabb = AABB(-67.3748, -25.5164, -56.5485, 134.75, 51.0327, 113.097)
+trail_enabled = true
+trail_lifetime = 0.2
+process_material = SubResource("ParticleProcessMaterial_m6uc8")
+draw_pass_1 = SubResource("RibbonTrailMesh_lv3yx")
+
+[node name="splash" type="GPUParticles3D" parent="."]
+emitting = false
+amount = 1100
+lifetime = 0.2
+explosiveness = 1.0
+randomness = 0.68
+trail_enabled = true
+trail_lifetime = 0.1
+process_material = SubResource("ParticleProcessMaterial_7xx7m")
+draw_pass_1 = SubResource("RibbonTrailMesh_4kfec")

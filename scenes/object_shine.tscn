@@ -1,0 +1,25 @@
+[gd_scene load_steps=5 format=3 uid="uid://ds8x42gr8qc0l"]
+
+[ext_resource type="Shader" path="res://assets/shaders/item_highlight.gdshader" id="1_iex1e"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rrvmt"]
+render_priority = 0
+shader = ExtResource("1_iex1e")
+shader_parameter/shine_color = Color(0.27451, 1, 0.94902, 1)
+shader_parameter/cycle_interval = 0.5
+shader_parameter/shine_speed = 5.0
+shader_parameter/shine_width = 24.42
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7dnp3"]
+next_pass = SubResource("ShaderMaterial_rrvmt")
+albedo_color = Color(0.176471, 0.729412, 1, 1)
+roughness = 0.0
+rim_enabled = true
+
+[sub_resource type="TorusMesh" id="TorusMesh_16s6h"]
+material = SubResource("StandardMaterial3D_7dnp3")
+
+[node name="object_shine" type="Node3D"]
+
+[node name="object" type="MeshInstance3D" parent="."]
+mesh = SubResource("TorusMesh_16s6h")

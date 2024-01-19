@@ -1,0 +1,27 @@
+[gd_scene load_steps=5 format=3 uid="uid://dmj0gnkb5xk1w"]
+
+[ext_resource type="Shader" path="res://assets/shaders/backface_colours.gdshader" id="1_dwi3a"]
+[ext_resource type="Texture2D" uid="uid://dnt6vwbf47qxj" path="res://assets/textures/val_smoke/smoke_tex.png" id="2_xxsec"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_devkd"]
+render_priority = 0
+shader = ExtResource("1_dwi3a")
+shader_parameter/albedo = null
+shader_parameter/uv_scale = Vector3(3, 1.375, 0)
+shader_parameter/uv_offset = Vector3(0.905, 0.22, 0)
+shader_parameter/texture_colour_front = Color(1, 0, 0, 1)
+shader_parameter/texture_colour_back = Color(0.00784314, 0.184314, 1, 1)
+shader_parameter/erosion_val = 0.0
+shader_parameter/erosion_offset = 0.355
+shader_parameter/texture_albedo = ExtResource("2_xxsec")
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_hwwyd"]
+material = SubResource("ShaderMaterial_devkd")
+height = 0.2
+cap_top = false
+cap_bottom = false
+
+[node name="backface_colours" type="Node3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("CylinderMesh_hwwyd")

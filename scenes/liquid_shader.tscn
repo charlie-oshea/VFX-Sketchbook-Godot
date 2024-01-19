@@ -1,0 +1,29 @@
+[gd_scene load_steps=6 format=3 uid="uid://8lgcndvlks84"]
+
+[ext_resource type="PackedScene" uid="uid://ddwevshyw3pbi" path="res://assets/models/sm_potion_bottle_1.glb" id="1_oxqp1"]
+[ext_resource type="Shader" path="res://assets/shaders/liquid_shader.gdshader" id="2_qb268"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_casar"]
+transparency = 1
+albedo_color = Color(0.556863, 0.662745, 0.752941, 0.545098)
+roughness = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1176k"]
+render_priority = 0
+shader = ExtResource("2_qb268")
+shader_parameter/step_test = 3.405
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_42k2l"]
+albedo_color = Color(0.690196, 0.537255, 0.294118, 1)
+
+[node name="liquid_shader" type="Node3D"]
+
+[node name="sm_potion_bottle_1" parent="." instance=ExtResource("1_oxqp1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.47682, 0)
+
+[node name="potion" parent="sm_potion_bottle_1" index="0"]
+surface_material_override/0 = SubResource("StandardMaterial3D_casar")
+surface_material_override/1 = SubResource("ShaderMaterial_1176k")
+surface_material_override/2 = SubResource("StandardMaterial3D_42k2l")
+
+[editable path="sm_potion_bottle_1"]

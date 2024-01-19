@@ -1,0 +1,29 @@
+[gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://bebpabbw5brjl"]
+
+[ext_resource type="Shader" path="res://assets/shaders/waterfall_scene/water_01.gdshader" id="1_u4vh2"]
+[ext_resource type="Texture2D" uid="uid://brlpx2iwlrecx" path="res://assets/textures/waterfall_scene/wind_waker_2048.png" id="2_u0k6n"]
+
+[resource]
+render_priority = 1
+shader = ExtResource("1_u4vh2")
+shader_parameter/alpha = 1.0
+shader_parameter/top_detail_colour = Color(1, 1, 1, 1)
+shader_parameter/bottom_detail_colour = Color(0.027451, 0.415686, 0.913725, 1)
+shader_parameter/base_colour = Color(0.109804, 0.658824, 0.929412, 1)
+shader_parameter/water_scale = 2.11
+shader_parameter/water_offset = Vector3(0, 0.7, 0)
+shader_parameter/water_speed = 0.4
+shader_parameter/second_layer_offset = Vector3(0.115, 0.16, 0)
+shader_parameter/second_layer_speed = 0.71
+shader_parameter/edge_distance = 4.01
+shader_parameter/edge_toggle = 1.0
+shader_parameter/wave_size = 20.0
+shader_parameter/wave_speed = 0.1
+shader_parameter/displacement_amount = 0.0
+shader_parameter/distortion_amount = 0.05
+shader_parameter/distortion_scale = 1.0
+shader_parameter/distortion_offset = Vector3(0.2, 0, 0)
+shader_parameter/distortion_speed = 0.78
+shader_parameter/offset = 4.75e-08
+shader_parameter/fade = 0.1
+shader_parameter/water_tex = ExtResource("2_u0k6n")

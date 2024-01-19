@@ -1,0 +1,81 @@
+[gd_scene load_steps=12 format=3 uid="uid://c0hfeyj7bnjs8"]
+
+[ext_resource type="Texture2D" uid="uid://bdltno1ca4gv8" path="res://assets/addons/kenney_prototype_textures/dark/texture_01.png" id="1_dcoi5"]
+[ext_resource type="PackedScene" uid="uid://e8ckd631jej6" path="res://scenes/smoke_vfx.tscn" id="2_fq372"]
+[ext_resource type="Script" path="res://scripts/CameraControl.gd" id="2_xuhud"]
+[ext_resource type="PackedScene" uid="uid://mau0hg77q30g" path="res://scenes/flame_vfx.tscn" id="3_s5h7e"]
+[ext_resource type="PackedScene" uid="uid://cabpdprjg5f6u" path="res://scenes/waterfall_vfx.tscn" id="4_yr00c"]
+[ext_resource type="PackedScene" uid="uid://ds0j6txulxc2w" path="res://scenes/explosion_vfx.tscn" id="5_cgvwm"]
+[ext_resource type="PackedScene" uid="uid://dlpa74ypmokgf" path="res://scenes/ripple_vfx.tscn" id="6_5hg8q"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_6or5e"]
+lightmap_size_hint = Vector2i(12, 12)
+size = Vector2(200, 200)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_n8jtm"]
+render_priority = -1
+albedo_texture = ExtResource("1_dcoi5")
+uv1_scale = Vector3(1000, 1000, 1000)
+
+[sub_resource type="Environment" id="Environment_ohibs"]
+background_mode = 1
+glow_enabled = true
+glow_bloom = 0.13
+glow_blend_mode = 0
+fog_enabled = true
+fog_light_color = Color(0.231373, 0.254902, 0.290196, 1)
+fog_light_energy = 0.0
+fog_density = 0.5551
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_o0goh"]
+radius = 0.01
+
+[node name="test_scene" type="Node3D"]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+shadow_enabled = true
+
+[node name="floor" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_6or5e")
+surface_material_override/0 = SubResource("StandardMaterial3D_n8jtm")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_ohibs")
+
+[node name="camera_control" type="CharacterBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.985268, 0.171018, 0, -0.171018, 0.985268, 0, 0.452314, 1.32269)
+motion_mode = 1
+script = ExtResource("2_xuhud")
+
+[node name="Camera" type="Camera3D" parent="camera_control"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="camera_control"]
+shape = SubResource("SphereShape3D_o0goh")
+
+[node name="VFX" type="Node3D" parent="."]
+
+[node name="flame_vfx" parent="VFX" instance=ExtResource("3_s5h7e")]
+transform = Transform3D(0.151296, 0, 0, 0, 0.151296, 0, 0, 0, 0.151296, -0.0220549, 0.118879, -0.0184274)
+visible = false
+
+[node name="waterfall_vfx" parent="VFX" instance=ExtResource("4_yr00c")]
+transform = Transform3D(0.194371, 0, 0, 0, 0.194371, 0, 0, 0, 0.194371, -0.0509779, 0.31365, -0.0554067)
+visible = false
+
+[node name="explosion_vfx" parent="VFX" instance=ExtResource("5_cgvwm")]
+transform = Transform3D(0.104633, 0, 0, 0, 0.104633, 0, 0, 0, 0.104633, -0.0296774, 0.127123, -0.0958291)
+visible = false
+script = null
+
+[node name="AnimationPlayer" parent="VFX/explosion_vfx" index="2"]
+autoplay = "explode"
+
+[node name="smoke_vfx" parent="VFX" instance=ExtResource("2_fq372")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0156522, 0)
+visible = false
+
+[node name="ripple_vfx" parent="VFX" instance=ExtResource("6_5hg8q")]
+transform = Transform3D(0.307431, 0, 0, 0, 0.307431, 0, 0, 0, 0.307431, 0, 0.00390941, 0)
+
+[editable path="VFX/explosion_vfx"]

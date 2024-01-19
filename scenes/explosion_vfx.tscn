@@ -1,0 +1,141 @@
+[gd_scene load_steps=17 format=3 uid="uid://ds0j6txulxc2w"]
+
+[ext_resource type="Shader" uid="uid://cpy6wwlkxsmtk" path="res://assets/shaders/particle_explosion.tres" id="1_hlf2a"]
+[ext_resource type="Script" path="res://scripts/explosion_vfx.gd" id="1_ruerv"]
+
+[sub_resource type="Gradient" id="Gradient_fp31k"]
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_hicid"]
+gradient = SubResource("Gradient_fp31k")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_4awpp"]
+emission_shape = 1
+emission_sphere_radius = 1.0
+particle_flag_rotate_y = true
+gravity = Vector3(0, 2, 0)
+damping_min = 1.0
+damping_max = 2.0
+angle_min = -720.0
+angle_max = 217.0
+color_ramp = SubResource("GradientTexture1D_hicid")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_126vn"]
+fractal_octaves = 3
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_n6668"]
+seamless = true
+noise = SubResource("FastNoiseLite_126vn")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_tgdh8"]
+fractal_octaves = 1
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_55gec"]
+seamless = true
+noise = SubResource("FastNoiseLite_tgdh8")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_lnsl4"]
+render_priority = 0
+shader = ExtResource("1_hlf2a")
+shader_parameter/displacement_pan = Vector2(0, -0.5)
+shader_parameter/displament_strength = 0.14
+shader_parameter/base_colour = Color(0.0980392, 0.0980392, 0.0980392, 1)
+shader_parameter/emission_colour = Color(0.662745, 0.25098, 0, 1)
+shader_parameter/emission_strength = 15.0
+shader_parameter/displacement_texture = SubResource("NoiseTexture2D_55gec")
+shader_parameter/alpha_mask = SubResource("NoiseTexture2D_n6668")
+
+[sub_resource type="SphereMesh" id="SphereMesh_7c3ee"]
+material = SubResource("ShaderMaterial_lnsl4")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ry5re"]
+albedo_color = Color(1, 0.462745, 0.0313726, 1)
+emission_enabled = true
+emission = Color(1, 0.780392, 0.67451, 1)
+emission_energy_multiplier = 2.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_ohbdu"]
+material = SubResource("StandardMaterial3D_ry5re")
+radius = 1.0
+height = 2.0
+
+[sub_resource type="Animation" id="Animation_wc4yr"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("explosion_particles:emitting")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("flash_sphere:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_x6mxx"]
+resource_name = "explode"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("explosion_particles:emitting")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.0131304, 0.953505),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [false, true, false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("flash_sphere:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.0120606, 0.182759),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [false, true, false]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_j8dsg"]
+_data = {
+"RESET": SubResource("Animation_wc4yr"),
+"explode": SubResource("Animation_x6mxx")
+}
+
+[node name="explosion_vfx" type="Node3D"]
+script = ExtResource("1_ruerv")
+
+[node name="explosion_particles" type="GPUParticles3D" parent="."]
+emitting = false
+amount = 32
+explosiveness = 0.95
+local_coords = true
+process_material = SubResource("ParticleProcessMaterial_4awpp")
+draw_pass_1 = SubResource("SphereMesh_7c3ee")
+
+[node name="flash_sphere" type="MeshInstance3D" parent="."]
+visible = false
+mesh = SubResource("SphereMesh_ohbdu")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_j8dsg")
+}

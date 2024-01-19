@@ -1,0 +1,43 @@
+[gd_resource type="VisualShader" load_steps=7 format=3 uid="uid://b5p7ccevyoqwc"]
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_rh3i3"]
+parameter_name = "fresnel_amount"
+hint = 1
+
+[sub_resource type="VisualShaderNodeMix" id="VisualShaderNodeMix_vtypk"]
+default_input_values = [0, Vector3(0, 0, 0), 1, Vector3(1, 1, 1), 2, Vector3(0.5, 0.5, 0.5)]
+op_type = 3
+
+[sub_resource type="VisualShaderNodeTexture2DParameter" id="VisualShaderNodeTexture2DParameter_djbyh"]
+parameter_name = "albedo"
+
+[sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_843nc"]
+source = 5
+
+[sub_resource type="VisualShaderNodeFresnel" id="VisualShaderNodeFresnel_54edu"]
+default_input_values = [2, false, 3, 2.0]
+
+[sub_resource type="VisualShaderNodeColorParameter" id="VisualShaderNodeColorParameter_0qxnq"]
+parameter_name = "fresnel_colour"
+
+[resource]
+code = "shader_type spatial;
+render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_schlick_ggx;
+
+
+
+"
+nodes/fragment/0/position = Vector2(660, 160)
+nodes/fragment/3/node = SubResource("VisualShaderNodeTexture2DParameter_djbyh")
+nodes/fragment/3/position = Vector2(-400, -20)
+nodes/fragment/4/node = SubResource("VisualShaderNodeTexture_843nc")
+nodes/fragment/4/position = Vector2(160, 40)
+nodes/fragment/5/node = SubResource("VisualShaderNodeFresnel_54edu")
+nodes/fragment/5/position = Vector2(-280, 700)
+nodes/fragment/7/node = SubResource("VisualShaderNodeColorParameter_0qxnq")
+nodes/fragment/7/position = Vector2(-320, 540)
+nodes/fragment/10/node = SubResource("VisualShaderNodeFloatParameter_rh3i3")
+nodes/fragment/10/position = Vector2(-200, 300)
+nodes/fragment/11/node = SubResource("VisualShaderNodeMix_vtypk")
+nodes/fragment/11/position = Vector2(240, 340)
+nodes/fragment/connections = PackedInt32Array(3, 0, 4, 2, 10, 0, 11, 2)

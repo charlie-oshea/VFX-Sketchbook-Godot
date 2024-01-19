@@ -1,0 +1,54 @@
+[gd_scene load_steps=11 format=3 uid="uid://cs630sdwxthh6"]
+
+[ext_resource type="Material" uid="uid://ccilqebkj0e1m" path="res://assets/shaders/shadermats/skybox_1.tres" id="1_nw023"]
+[ext_resource type="Script" path="res://scripts/light_rotate.gd" id="2_ugw30"]
+[ext_resource type="Script" path="res://assets/camera.gd" id="3_818sk"]
+[ext_resource type="PackedScene" uid="uid://dkcvntk2ggh0l" path="res://scenes/pixelize.tscn" id="4_rxisi"]
+
+[sub_resource type="Sky" id="Sky_xdfol"]
+sky_material = ExtResource("1_nw023")
+
+[sub_resource type="Environment" id="Environment_xxpju"]
+background_mode = 2
+sky = SubResource("Sky_xdfol")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_723fd"]
+frequency = 0.013
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_apktm"]
+seamless = true
+noise = SubResource("FastNoiseLite_723fd")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hls2c"]
+albedo_color = Color(0, 0, 0, 1)
+roughness = 0.0
+normal_enabled = true
+normal_scale = 0.01
+normal_texture = SubResource("NoiseTexture2D_apktm")
+uv1_scale = Vector3(500, 500, 500)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_erg28"]
+material = SubResource("StandardMaterial3D_hls2c")
+size = Vector2(500, 500)
+
+[node name="stylised_skybox" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_xxpju")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.879125, 0.476591, 0, -0.476591, 0.879125, -0.27001, 0, 0)
+script = ExtResource("2_ugw30")
+speed = 20.0
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_erg28")
+
+[node name="FreeLookCamera" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.541393, 0)
+fov = 110.0
+script = ExtResource("3_818sk")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="pixelize" parent="CanvasLayer" instance=ExtResource("4_rxisi")]

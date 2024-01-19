@@ -1,0 +1,23 @@
+[gd_scene load_steps=5 format=3 uid="uid://cgq0j668iql87"]
+
+[ext_resource type="Shader" path="res://assets/shaders/vertex_offset.gdshader" id="1_qnnfr"]
+[ext_resource type="Texture2D" uid="uid://by36kwtdh467j" path="res://assets/textures/ripple/voronoinoise_tex.png" id="2_runsj"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_mmimm"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_qx6g0"]
+render_priority = 0
+shader = ExtResource("1_qnnfr")
+shader_parameter/albedo = Color(0.235294, 0, 0.807843, 1)
+shader_parameter/roughness = 1.0
+shader_parameter/uv_scale = Vector3(4.95, 2, 0)
+shader_parameter/uv_offset = Vector3(0, -0.51, 0)
+shader_parameter/vertex_offset_intensity = 0.24
+shader_parameter/texture_albedo = ExtResource("2_runsj")
+
+[node name="vertex_offset" type="Node3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_mmimm")
+surface_material_override/0 = SubResource("ShaderMaterial_qx6g0")
+metadata/_edit_lock_ = true

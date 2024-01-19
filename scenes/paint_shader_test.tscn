@@ -1,0 +1,18 @@
+[gd_scene load_steps=5 format=3 uid="uid://cyjbntmlmshg8"]
+
+[ext_resource type="Shader" path="res://assets/shaders/painterly_shader.gdshader" id="1_j7l51"]
+[ext_resource type="Texture2D" uid="uid://ga3e5ytd2gj2" path="res://assets/textures/painterly/voronoicolour.png" id="2_e5kl6"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_igw5o"]
+render_priority = 0
+shader = ExtResource("1_j7l51")
+shader_parameter/input_voronoi = ExtResource("2_e5kl6")
+
+[sub_resource type="TorusMesh" id="TorusMesh_7u16m"]
+material = SubResource("ShaderMaterial_igw5o")
+
+[node name="PaintShaderTest" type="Node3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("TorusMesh_7u16m")
+metadata/_edit_lock_ = true
