@@ -12,7 +12,6 @@ uniform vec3 sunset_bottom_colour : source_color = vec3(0.0);
 
 uniform vec3 night_top_colour : source_color = vec3(0.0);
 uniform vec3 night_bottom_colour : source_color = vec3(0.0);
-uniform float night_darkness : hint_range(0.0, 1.0, 0.01);
 
 // Sunset and sun parameters
 group_uniforms sun;
@@ -90,14 +89,7 @@ vec3 voronoi( in vec3 x ){
     }
     return vec3( sqrt( res ), abs(id) );
 }
-// Rotation Function UNUSED
-mat3 y_3d_rotation_matrix(float angle) {
-	float cos_angle = cos(angle);
-	float sin_angle = sin(angle);
-	// Create the 3x3 rotation matrix around the Y-axis
-	mat3 m3 =  mat3(vec3(cos_angle, 0.0, sin_angle),vec3(0.0, 1.0, 0.0),vec3(-sin_angle, 0.0, cos_angle));
-	return m3;
-}
+
 
 void sky() {
 	vec2 sky_uv = EYEDIR.xz / EYEDIR.y;

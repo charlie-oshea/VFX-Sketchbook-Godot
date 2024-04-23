@@ -1,0 +1,23 @@
+[gd_resource type="ShaderMaterial" load_steps=4 format=3 uid="uid://drwbn253veibw"]
+
+[ext_resource type="Shader" path="res://scenes/skybox_planet.gdshader" id="1_dwgjs"]
+[ext_resource type="Texture2D" uid="uid://osypjsid1irv" path="res://assets/textures/skybox_planet/Snow Planet CH16_2.png" id="2_ejkp4"]
+[ext_resource type="Texture2D" uid="uid://oy7n7n7m4jgs" path="res://assets/textures/skybox_planet/snow_planet_normal.png" id="3_hucya"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_dwgjs")
+shader_parameter/light_direction = Vector3(2.37, 2.34, 7.19)
+shader_parameter/atmosphere_colour = Color(0.14902, 0.313726, 0.403922, 1)
+shader_parameter/min_atmosphere = 0.54
+shader_parameter/max_atmosphere = 0.64
+shader_parameter/atmos_amount = 0.97
+shader_parameter/atmos_haloblend = 0.23
+shader_parameter/planet_radius = 0.39
+shader_parameter/planet_tiling_scale = 1.0
+shader_parameter/planet_spin_speed = 0.1
+shader_parameter/planet_pitch = 0.0
+shader_parameter/planet_roll = 1.0
+shader_parameter/distance_threshold = 1.0
+shader_parameter/image = ExtResource("2_ejkp4")
+shader_parameter/image_normal = ExtResource("3_hucya")

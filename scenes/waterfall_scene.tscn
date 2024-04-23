@@ -1,9 +1,10 @@
-[gd_scene load_steps=38 format=3 uid="uid://cc0fn3b05cw1y"]
+[gd_scene load_steps=40 format=3 uid="uid://cc0fn3b05cw1y"]
 
 [ext_resource type="Script" path="res://assets/camera.gd" id="1_4udk3"]
 [ext_resource type="PackedScene" uid="uid://o2bedvhp6j22" path="res://assets/models/waterfall_scene/waterfall_model.glb" id="1_a3pr3"]
 [ext_resource type="Material" uid="uid://bebpabbw5brjl" path="res://assets/shaders/waterfall_scene/water_motion.tres" id="1_mm3s6"]
 [ext_resource type="Texture2D" uid="uid://brlpx2iwlrecx" path="res://assets/textures/waterfall_scene/wind_waker_2048.png" id="2_ek67v"]
+[ext_resource type="Shader" path="res://assets/shaders/kuwahara.gdshader" id="2_ukdau"]
 [ext_resource type="Shader" path="res://assets/shaders/waterfall_scene/rock.gdshader" id="3_qli78"]
 [ext_resource type="Shader" path="res://assets/shaders/waterfall_scene/waterfall_splash.gdshader" id="4_cklrh"]
 [ext_resource type="Shader" path="res://assets/shaders/stylised_sky.gdshader" id="7_2delc"]
@@ -11,6 +12,13 @@
 [ext_resource type="ArrayMesh" uid="uid://dcsuuyb0r6u3m" path="res://assets/models/waterfall_scene/landscape_ground.res" id="9_2snar"]
 [ext_resource type="ArrayMesh" uid="uid://csbxgc8jgs1mh" path="res://assets/models/waterfall_scene/landscape_water.res" id="10_wdxpf"]
 [ext_resource type="Shader" path="res://assets/shaders/waterfall_scene/water_01.gdshader" id="11_o4453"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_i7goj"]
+shader = ExtResource("2_ukdau")
+shader_parameter/radius = 4
+shader_parameter/subsample_amount = 4.0
+shader_parameter/edge_sensitivity = 0.5
+shader_parameter/smoothing_strength = 0.5
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_lkbbi"]
 render_priority = 0
@@ -48,9 +56,9 @@ curve = SubResource("Curve_enm3g")
 emission_shape = 3
 emission_box_extents = Vector3(0, 0, 3.165)
 direction = Vector3(0, 1, 0)
-gravity = Vector3(0, -5, 0)
 initial_velocity_min = 4.0
 initial_velocity_max = 4.0
+gravity = Vector3(0, -5, 0)
 scale_min = 0.4
 scale_curve = SubResource("CurveTexture_c00ge")
 
@@ -119,7 +127,6 @@ shader_parameter/sunset_top_colour = Color(0.0784314, 0.705882, 0.952941, 1)
 shader_parameter/sunset_bottom_colour = Color(0.0666667, 0.776471, 0.964706, 1)
 shader_parameter/night_top_colour = Color(0.0666667, 0.027451, 0.254902, 1)
 shader_parameter/night_bottom_colour = Color(0.0431373, 0.0156863, 0.278431, 1)
-shader_parameter/night_darkness = 0.0
 shader_parameter/SUNSET_SIZE = 2.454
 shader_parameter/SUNSET_OPACITY = 0.149
 shader_parameter/SUN_COLOUR = Color(1, 1, 1, 1)
@@ -196,6 +203,16 @@ shader_parameter/water_tex = ExtResource("2_ek67v")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 56.2911, 10.4301, 269.069)
 fov = 70.0
 script = ExtResource("1_4udk3")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="FreeLookCamera"]
+
+[node name="ColorRect" type="ColorRect" parent="FreeLookCamera/CanvasLayer"]
+material = SubResource("ShaderMaterial_i7goj")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="waterfall_model" parent="." instance=ExtResource("1_a3pr3")]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)

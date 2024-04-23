@@ -1,0 +1,37 @@
+[gd_scene load_steps=13 format=3 uid="uid://bi0enjsi2j7kk"]
+
+[ext_resource type="Shader" path="res://assets/shaders/starry_sky.gdshader" id="1_44hjm"]
+[ext_resource type="ArrayMesh" uid="uid://cxntrk6wntcjt" path="res://assets/models/sm_planet_disc.res" id="1_gpfld"]
+[ext_resource type="Material" uid="uid://drwbn253veibw" path="res://assets/shaders/skybox_planet.tres" id="2_0m8qn"]
+[ext_resource type="Texture2D" uid="uid://bpq3lggxylair" path="res://assets/textures/skybox_planet/back.png" id="2_pprhl"]
+[ext_resource type="Texture2D" uid="uid://dmgdndqsksioi" path="res://assets/textures/skybox_planet/bottom.png" id="3_l15ws"]
+[ext_resource type="Texture2D" uid="uid://0i8uxx5wpael" path="res://assets/textures/skybox_planet/front.png" id="4_cfhw8"]
+[ext_resource type="Texture2D" uid="uid://cdwkmakhxy5kr" path="res://assets/textures/skybox_planet/left.png" id="5_dnofw"]
+[ext_resource type="Texture2D" uid="uid://dawvk8rbyspl2" path="res://assets/textures/skybox_planet/right.png" id="6_ksmqm"]
+[ext_resource type="Texture2D" uid="uid://bylgk76u0utwf" path="res://assets/textures/skybox_planet/top.png" id="7_pd7k7"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_gq513"]
+shader = ExtResource("1_44hjm")
+shader_parameter/front = ExtResource("4_cfhw8")
+shader_parameter/back = ExtResource("2_pprhl")
+shader_parameter/left = ExtResource("5_dnofw")
+shader_parameter/right = ExtResource("6_ksmqm")
+shader_parameter/top = ExtResource("7_pd7k7")
+shader_parameter/bottom = ExtResource("3_l15ws")
+
+[sub_resource type="Sky" id="Sky_jdssp"]
+sky_material = SubResource("ShaderMaterial_gq513")
+
+[sub_resource type="Environment" id="Environment_ux6ow"]
+background_mode = 2
+sky = SubResource("Sky_jdssp")
+
+[node name="skybox_planet" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_ux6ow")
+
+[node name="mesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+mesh = ExtResource("1_gpfld")
+surface_material_override/0 = ExtResource("2_0m8qn")

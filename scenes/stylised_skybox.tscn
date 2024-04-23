@@ -37,11 +37,10 @@ size = Vector2(500, 500)
 environment = SubResource("Environment_xxpju")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.879125, 0.476591, 0, -0.476591, 0.879125, -0.27001, 0, 0)
+transform = Transform3D(1, 0, 0, 0, -0.999995, -0.00310659, 0, 0.00310659, -0.999995, -0.27001, 0, 0)
 script = ExtResource("2_ugw30")
-speed = 20.0
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+[node name="ground" type="MeshInstance3D" parent="."]
 mesh = SubResource("PlaneMesh_erg28")
 
 [node name="FreeLookCamera" type="Camera3D" parent="."]
@@ -52,3 +51,4 @@ script = ExtResource("3_818sk")
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="pixelize" parent="CanvasLayer" instance=ExtResource("4_rxisi")]
+visible = false

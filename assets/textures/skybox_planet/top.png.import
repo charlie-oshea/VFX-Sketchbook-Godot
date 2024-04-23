@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://og38empnqcy2"
-path.s3tc="res://.godot/imported/texture_04.png-1c58b1c79b1705988d51c236bd249576.s3tc.ctex"
+uid="uid://bylgk76u0utwf"
+path.s3tc="res://.godot/imported/top.png-fe633da3b82bf22a6636b13513bc6701.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/addons/kenney_prototype_textures/dark/texture_04.png"
-dest_files=["res://.godot/imported/texture_04.png-1c58b1c79b1705988d51c236bd249576.s3tc.ctex"]
+source_file="res://assets/textures/skybox_planet/top.png"
+dest_files=["res://.godot/imported/top.png-fe633da3b82bf22a6636b13513bc6701.s3tc.ctex"]
 
 [params]
 
